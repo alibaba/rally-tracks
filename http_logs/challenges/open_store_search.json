@@ -1,0 +1,58 @@
+{
+  "name": "open_store_search",
+  "description": "Indexes the whole document corpus using Elasticsearch default settings. We only adjust the number of replicas as we benchmark a single node cluster and Rally will only start the benchmark if the cluster turns green. Document ids are unique so all index operations are append only. After that a couple of queries are run.",
+  "default": false,
+  "schedule": [
+    {
+      "name": "match",
+      "operation": {
+        "operation-type": "search",
+        "index": "logs-*",
+        "body": {
+          "query": {
+            "match": {
+              "request": "images"
+            }
+          }
+        }
+      },
+      "iterations": 1000,
+      "clients": 4
+    },
+    {
+      "name": "term",
+      "operation": {
+        "operation-type": "search",
+        "index": "logs-*",
+        "body": {
+          "query": {
+            "term": {
+              "clientip": "51.43.0.0"
+            }
+          }
+        }
+      },
+      "iterations": 1000,
+      "clients": 4
+    },
+    {
+      "name": "range",
+      "operation": {
+        "operation-type": "search",
+        "index": "logs-*",
+        "body": {
+          "query": {
+            "range": {
+              "size": {
+                "gte": 1000,
+                "lte": 2000
+              }
+            }
+          }
+        }
+      },
+      "iterations": 1000,
+      "clients": 4
+    }
+  ]
+}
